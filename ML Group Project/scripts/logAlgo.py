@@ -35,7 +35,7 @@ lm.fit(trainX, targetY)
 
 #predict the 75 test results: 
 Y_pred = lm.predict(testX)
-print(Y_pred)
+#print(Y_pred)
 	
 # counts the equal values of 2 lists:
 def intersect(list1, list2):
