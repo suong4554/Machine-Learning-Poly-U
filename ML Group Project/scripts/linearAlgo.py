@@ -12,7 +12,7 @@ def loadDF(dir_path, fileName):
     return data
 	
 #load the training data frame:
-home_dir = os.path.abspath('').replace("scripts", "")
+home_dir = os.path.dirname(os.path.realpath(__file__)).replace("scripts", "")
 trainDF = loadDF(home_dir, "train.csv")
 	
 # create the training set: (without "target" and "id" column)
@@ -26,7 +26,7 @@ testY = targetY.tail(75)
 # the 250-75 are used for training:
 targetY = targetY.head(250-75)
 trainX = trainX.head(250-75)
-print(testY)
+#print(testY)
 	
 #apply Linear Regression:
 lm = LinearRegression()
