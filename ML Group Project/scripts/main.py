@@ -1,4 +1,6 @@
+from IPython import get_ipython
 import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score
 import pandas as pd
 import os
 import linearAlgo
@@ -13,20 +15,9 @@ def load_df(dir_path, file_name):
     return data
 
 
-# counts the equal values of 2 lists:
-def intersect(list1, list2):
-    counter = 0
-    for x in range(len(list1)):
-        if list1[x] == list2[x]:
-            counter += 1
-    return counter
-
-
 # display result accuracy of learning procedure:
-def display_accuracy (y_prediction, test_y, display_message):
-    hits = intersect(y_prediction, test_y.tolist())
-    # Accuracy:
-    print(display_message + str(hits) + " of " + str(len(test_y)) + " correctly classified! => " + str(hits / len(test_y)) + "% accuracy.")
+def display_accuracy(y_prediction, test_y, display_message):
+    print("Accuracy_Score of " + display_message + " " + str(accuracy_score(y_prediction, test_y.tolist())))
 
 
 # load the training data frame:
@@ -48,13 +39,24 @@ train_x = train_x.head(250 - test_amount)
 
 # apply Linear Regression:
 y_prediction = linearAlgo.apply_linear_regression(train_x, train_y, test_x)
-display_accuracy(y_prediction, test_y, "Linear Regression accuracy: ")
+display_accuracy(y_prediction, test_y, "Linear Regression")
 
 # apply Logistic Regression:
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x)
-display_accuracy(y_prediction, test_y, "Logistic Regression accuracy: ")
+display_accuracy(y_prediction, test_y, "Logistic Regression")
 
 # apply k-Nearest-Neighbors Algorithm:
 size_k = 3
 y_prediction = kncAlgo.apply_logistic_regression(train_x, train_y, test_x, size_k)
-display_accuracy(y_prediction, test_y, "k-Nearest-Neighbors accuracy: ")
+display_accuracy(y_prediction, test_y, "k-Nearest-Neighbors (k=3)")
+# -- Test different k values --
+scores = []
+k_range = list(range(1,30))
+for k in k_range:
+    actual_prediction = kncAlgo.apply_logistic_regression(train_x, train_y, test_x, k)
+    scores.append(accuracy_score(test_y, actual_prediction))
+max_accuracy = max(scores)
+max_index = scores.index(max_accuracy) + 1 # function starts to count from 0
+print("\t Maximal accuacy (" + str(max_accuracy) + "%) with k = " + str(max_index))
+
+# apply

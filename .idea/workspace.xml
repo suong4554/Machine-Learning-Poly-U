@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="db1feac7-d466-47d8-ab6a-5dfded346b17" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ML Group Project/scripts/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ML Group Project/scripts/.ipynb_checkpoints/testCase1-checkpoint.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ML Group Project/scripts/kncAlgo.py" beforeDir="false" afterPath="$PROJECT_DIR$/ML Group Project/scripts/kncAlgo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ML Group Project/scripts/linearAlgo.py" beforeDir="false" afterPath="$PROJECT_DIR$/ML Group Project/scripts/linearAlgo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ML Group Project/scripts/logAlgo.py" beforeDir="false" afterPath="$PROJECT_DIR$/ML Group Project/scripts/logAlgo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ML Group Project/scripts/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ML Group Project/scripts/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
