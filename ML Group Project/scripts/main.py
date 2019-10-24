@@ -8,7 +8,9 @@ import logAlgo
 import kncAlgo
 import ranForestClassifierAlgo as rfCA
 import svmAlgo as svm
-
+import neuralAlgo as nA
+import gausClassAlgo as gca
+import decTreeAlgo as dta
 
 
 # returns the data from the Exel table:
@@ -50,12 +52,13 @@ train_x = train_x.head(250 - test_amount)
 y_prediction = linearAlgo.apply_linear_regression(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Linear Regression")
 
-
+####################################################################################
 
 # apply Logistic Regression:
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Logistic Regression")
 
+####################################################################################
 
 # apply Support Vector XXXX
 # apply svr (regression)
@@ -83,7 +86,6 @@ max_accuracy = max(scores0)
 max_index = scores0.index(max_accuracy) + 1 # function starts to count from 0
 print("\t Maximum accuacy (" + str(max_accuracy) + "%) with kernel = " + str(scores[max_index][1]) + " with degree = " + str(scores[max_index][2]))
 
-
 # apply svc (classification)
 y_prediction = svm.apply_svc(train_x, train_y, test_x, "poly", 2)
 display_accuracy(y_prediction, test_y, "Support Vector Classification")
@@ -108,6 +110,24 @@ max_index = scores0.index(max_accuracy) + 1 # function starts to count from 0
 print("\t Maximum accuacy (" + str(max_accuracy) + "%) with kernel = " + str(scores[max_index][1]) + " with degree = " + str(scores[max_index][2]))
 
 
+####################################################################################
+
+# apply Neural Network MLP Classifier
+y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x)
+display_accuracy(y_prediction, test_y, "Neural Network MLP Classification")
+####################################################################################
+
+#apply Gaussian Process Classifier
+y_prediction = gca.apply_gaus(train_x, train_y, test_x)
+display_accuracy(y_prediction, test_y, "Gaussian Process Classifier")
+
+####################################################################################
+
+#apply Decision Tree Classifier
+y_prediction = dta.apply_tree(train_x, train_y, test_x)
+display_accuracy(y_prediction, test_y, "Decision Tree Classifier")
+
+####################################################################################
 
 # apply k-Nearest-Neighbors Algorithm:
 size_k = 3
@@ -122,6 +142,8 @@ for k in k_range:
 max_accuracy = max(scores)
 max_index = scores.index(max_accuracy) + 1 # function starts to count from 0
 print("\t Maximal accuacy (" + str(max_accuracy) + "%) with k = " + str(max_index))
+
+####################################################################################
 
 # apply Random Forest Classifier Algorithm:
 max_depth = 9
