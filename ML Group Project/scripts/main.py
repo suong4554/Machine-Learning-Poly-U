@@ -11,6 +11,8 @@ import svmAlgo as svm
 import neuralAlgo as nA
 import gausClassAlgo as gca
 import decTreeAlgo as dta
+import discrimAnalAlgo as daa
+import naiveBayAlgo as nba
 
 
 # returns the data from the Exel table:
@@ -48,19 +50,20 @@ train_x = train_x.head(250 - test_amount)
 
 ##########################################################################################
 #####################################APPLYING ML LIBRARIES###################################
-# apply Linear Regression:
+
+################## apply Linear Regression: #####################
 y_prediction = linearAlgo.apply_linear_regression(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Linear Regression")
-
+print()
 ####################################################################################
 
-# apply Logistic Regression:
+################## apply Logistic Regression:##################
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Logistic Regression")
-
+print()
 ####################################################################################
 
-# apply Support Vector XXXX
+################## apply Support Vector XXXX##################
 # apply svr (regression)
 y_prediction = svm.apply_svr(train_x, train_y, test_x, "rbf", 1)
 display_accuracy(y_prediction, test_y, "Support Vector Regression")
@@ -85,7 +88,7 @@ scores0 = [_[0] for _ in scores]
 max_accuracy = max(scores0)
 max_index = scores0.index(max_accuracy) + 1 # function starts to count from 0
 print("\t Maximum accuacy (" + str(max_accuracy) + "%) with kernel = " + str(scores[max_index][1]) + " with degree = " + str(scores[max_index][2]))
-
+print()
 # apply svc (classification)
 y_prediction = svm.apply_svc(train_x, train_y, test_x, "poly", 2)
 display_accuracy(y_prediction, test_y, "Support Vector Classification")
@@ -108,28 +111,52 @@ scores0 = [_[0] for _ in scores]
 max_accuracy = max(scores0)
 max_index = scores0.index(max_accuracy) + 1 # function starts to count from 0
 print("\t Maximum accuacy (" + str(max_accuracy) + "%) with kernel = " + str(scores[max_index][1]) + " with degree = " + str(scores[max_index][2]))
-
+print()
 
 ####################################################################################
 
-# apply Neural Network MLP Classifier
+################## apply Neural Network MLP Classifier##################
 y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Neural Network MLP Classification")
+print()
 ####################################################################################
 
-#apply Gaussian Process Classifier
+################## apply Naive Bayes GaussianNB##################
+y_prediction = nba.apply_naive(train_x, train_y, test_x)
+display_accuracy(y_prediction, test_y, "Naive Bayes GaussianNB")
+
+#Apply Linear and Quadratic Discrimination Analysis
+solvers = ["svd", "lsqr", "eigen"]
+#Eigen does not work
+#apply linear
+y_prediction = daa.apply_linear_disc(train_x, train_y, test_x, "svd")
+display_accuracy(y_prediction, test_y, "Linear Discrimination Analysis: Solver=svd")
+print()
+y_prediction = daa.apply_linear_disc(train_x, train_y, test_x, "lsqr")
+display_accuracy(y_prediction, test_y, "Linear Discrimination Analysis: Solver=lsqr")
+print()
+
+#apply quadratic
+#No solvers for quadratic discrimination
+y_prediction = daa.apply_quad_disc(train_x, train_y, test_x)
+display_accuracy(y_prediction, test_y, "Quadratic Discrimination Analysis")
+print()
+####################################################################################
+
+
+##################apply Gaussian Process Classifier##################
 y_prediction = gca.apply_gaus(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Gaussian Process Classifier")
-
+print()
 ####################################################################################
 
-#apply Decision Tree Classifier
+###################apply Decision Tree Classifier##################
 y_prediction = dta.apply_tree(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Decision Tree Classifier")
-
+print()
 ####################################################################################
 
-# apply k-Nearest-Neighbors Algorithm:
+################## apply k-Nearest-Neighbors Algorithm:##################
 size_k = 3
 y_prediction = kncAlgo.apply_logistic_regression(train_x, train_y, test_x, size_k)
 display_accuracy(y_prediction, test_y, "k-Nearest-Neighbors (k=3)")
@@ -142,10 +169,10 @@ for k in k_range:
 max_accuracy = max(scores)
 max_index = scores.index(max_accuracy) + 1 # function starts to count from 0
 print("\t Maximal accuacy (" + str(max_accuracy) + "%) with k = " + str(max_index))
-
+print()
 ####################################################################################
 
-# apply Random Forest Classifier Algorithm:
+################## apply Random Forest Classifier Algorithm:##################
 max_depth = 9
 estimators = 43
 y_prediction = rfCA.apply_random_forest_classifier(train_x, train_y, test_x, max_depth, estimators)
@@ -171,5 +198,5 @@ scores0 = [_[0] for _ in scores]
 max_accuracy = max(scores0)
 max_index = scores0.index(max_accuracy) + 1 # function starts to count from 0
 print("\t Maximum accuacy (" + str(max_accuracy) + "%) with estimator = " + str(scores[max_index][1]) + " with max_depth = " + str(scores[max_index][2]))
-
+print()
 # apply
