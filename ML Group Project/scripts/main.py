@@ -75,16 +75,14 @@ scores = []
 for kernel in kernelType:
     for degree in range(degreeRange):
         temp = []
-        """
         if kernel == "linear" and degree > 1:
             break #Saves time 
         else:
-        """
-        actual_prediction = svm.apply_svr(train_x, train_y, test_x, kernel, degree)
-        temp.append(accuracy_score(test_y, actual_prediction))
-        temp.append(kernel)
-        temp.append(degree)
-        scores.append(temp)
+            actual_prediction = svm.apply_svr(train_x, train_y, test_x, kernel, degree)
+            temp.append(accuracy_score(test_y, actual_prediction))
+            temp.append(kernel)
+            temp.append(degree)
+            scores.append(temp)
 scores0 = [_[0] for _ in scores]
 
 max_accuracy = max(scores0)
