@@ -14,8 +14,6 @@ import decTreeAlgo as dta
 import discrimAnalAlgo as daa
 import naiveBayAlgo as nba
 
-import writeSubmission as ws
-
 
 # returns the data from the Exel table:
 def load_df(dir_path, file_name):
@@ -84,19 +82,19 @@ test_x = train_df.drop("id", axis=1)
 ##########################################################################################
 #####################################APPLYING ML LIBRARIES###################################
 
-"""
+
 ################## apply Logistic Regression:##################
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x)
 createSubmission(y_prediction, home_dir)
 
 submitD = True
-message = "test submission for Logistic Regression no params"
+message = "test submission for Logistic Regression penalty = l1"
 submit(submitD, message, home_dir)
 
 ####################################################################################
+
+
 """
-
-
 ################## apply Naive Bayes GaussianNB##################
 
 y_prediction = nba.apply_naive(train_x, train_y, test_x)
@@ -106,7 +104,7 @@ submit(submitD, message, home_dir)
 ####################################################################################
 
 
-
+"""
 
 
 
