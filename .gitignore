@@ -1,4 +1,5 @@
-
+*.xml
+*.pyc
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/Machine-Learning-Poly-U.iml
 .idea/misc.xml
