@@ -1,9 +1,13 @@
-
+*.xml
+*.pyc
+*.cpython-37.pyc
+*.idea
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/Machine-Learning-Poly-U.iml
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
+.idea/workspace.xml
 ML Group Project/scripts/__pycache__/main.cpython-37.pyc
 ML Group Project/scripts/__pycache__/logAlgo.cpython-37.pyc
 ML Group Project/scripts/__pycache__/linearAlgo.cpython-37.pyc

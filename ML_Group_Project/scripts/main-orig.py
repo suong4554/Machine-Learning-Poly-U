@@ -14,6 +14,8 @@ import decTreeAlgo as dta
 import discrimAnalAlgo as daa
 import naiveBayAlgo as nba
 
+import writeSubmission as ws
+
 
 # returns the data from the Exel table:
 def load_df(dir_path, file_name):
@@ -25,6 +27,17 @@ def load_df(dir_path, file_name):
 # display result accuracy of learning procedure:
 def display_accuracy(y_prediction, test_y, display_message):
     print("Accuracy_Score of " + display_message + " " + str(accuracy_score(y_prediction, test_y.tolist())))
+
+
+def createSubmission(arr, dir):
+    dir = dir + "\\submission\\submission.csv"
+    for i in range(len(arr)):
+        arr[i] = [i + 250, arr[i]]
+    df = pd.DataFrame(arr, columns = ["id", "target"])
+    df.to_csv(dir, index=False)
+    print("submission written to file")
+
+
 
 ##########################################################################################
 #####################################DATA PREPROCESSING###################################
@@ -54,13 +67,17 @@ train_x = train_x.head(250 - test_amount)
 ################## apply Linear Regression: #####################
 y_prediction = linearAlgo.apply_linear_regression(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Linear Regression")
-print()
+print(y_prediction)
 ####################################################################################
 
 ################## apply Logistic Regression:##################
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x)
 display_accuracy(y_prediction, test_y, "Logistic Regression")
+
+createSubmission(y_prediction, home_dir)
+
 print()
+
 ####################################################################################
 
 ################## apply Support Vector XXXX##################
