@@ -1,6 +1,7 @@
 *.xml
 *.pyc
 *.cpython-37.pyc
+*.idea
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/Machine-Learning-Poly-U.iml
 .idea/misc.xml
