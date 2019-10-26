@@ -9,3 +9,14 @@ ML Group Project/scripts/__pycache__/logAlgo.cpython-37.pyc
 ML Group Project/scripts/__pycache__/linearAlgo.cpython-37.pyc
 ML Group Project/scripts/__pycache__/kncAlgo.cpython-37.pyc
 ML Group Project/scripts/.ipynb_checkpoints/testCase1-checkpoint.ipynb
+ML Group Project/scripts/__pycache__/svmAlgo.cpython-37.pyc
+ML Group Project/scripts/__pycache__/neuralAlgo.cpython-37.pyc
+ML Group Project/scripts/__pycache__/naiveBayAlgo.cpython-37.pyc
+ML Group Project/scripts/__pycache__/linearAlgo.cpython-37.pyc
+*.pyc
+*.pyc
+*.pyc
+*.pyc
+ML Group Project/scripts/__pycache__/kncAlgo.cpython-37.pyc
+ML Group Project/scripts/__pycache__/logAlgo.cpython-37.pyc
+ML Group Project/scripts/__pycache__/gausClassAlgo.cpython-37.pyc
