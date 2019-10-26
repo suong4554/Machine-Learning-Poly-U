@@ -3,7 +3,7 @@ from sklearn.neural_network import MLPClassifier
 
 def apply_MLPClassifier(train_x, train_y, test_x):
     # apply Linear Regression:
-    mlp = MLPClassifier()
+    mlp = MLPClassifier(warm_start=True, solver="adam")
     mlp.fit(train_x, train_y)
 
     # predict the results:
