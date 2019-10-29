@@ -23,6 +23,7 @@ def display_accuracy(y_prediction, test_y, display_message):
 def apply_logistic_regression(train_x, train_y, test_x):
     # apply Logistic Regression:
     lr = LogisticRegression(
+        
         C=1.0, 
         class_weight=None, 
         dual=False, 
@@ -33,7 +34,7 @@ def apply_logistic_regression(train_x, train_y, test_x):
         n_jobs=None, 
         penalty='l1',
         random_state=None, 
-        solver='warn',
+        #solver='lbfgs',
         tol=0.0001, 
         verbose=0, 
         warm_start=False)
