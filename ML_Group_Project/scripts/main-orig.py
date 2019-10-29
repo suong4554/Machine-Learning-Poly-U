@@ -14,7 +14,6 @@ import decTreeAlgo as dta
 import discrimAnalAlgo as daa
 import naiveBayAlgo as nba
 
-import writeSubmission as ws
 
 
 # returns the data from the Exel table:
