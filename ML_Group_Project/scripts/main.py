@@ -100,7 +100,7 @@ submit(submitD, message, home_dir)
 ################## apply Naive Bayes GaussianNB##################
 
 y_prediction = nba.apply_naive(train_x, train_y, test_x)
-submitD = True
+submitD = False
 message = "test submission for Logistic Regression no params"
 submit(submitD, message, home_dir)
 ####################################################################################

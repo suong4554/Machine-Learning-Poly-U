@@ -31,7 +31,7 @@ def apply_logistic_regression(train_x, train_y, test_x):
         max_iter=100, 
         multi_class='warn',
         n_jobs=None, 
-        penalty='l1', 
+        penalty='l1',
         random_state=None, 
         solver='warn',
         tol=0.0001, 
