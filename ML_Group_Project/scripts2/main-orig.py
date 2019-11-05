@@ -14,7 +14,7 @@ import decTreeAlgo as dta
 import discrimAnalAlgo as daa
 import naiveBayAlgo as nba
 from sklearn.model_selection import train_test_split
-
+import pickle
 
 # returns the data from the Exel table:
 def load_df(dir_path, file_name):
@@ -44,60 +44,41 @@ def createSubmission(arr, dir):
 ##########################################################################################
 #####################################DATA PREPROCESSING###################################
 # load the training data frame:
-home_dir = os.path.dirname(os.path.realpath(__file__)).replace("scripts", "")
+home_dir = os.path.dirname(os.path.realpath(__file__)).replace("scripts2", "")
 train_df = load_df(home_dir, "train.csv")
 
 # create the training set: (without "target" and "id" column)
 from itertools import combinations
 train_x = train_df.drop("target", axis=1).drop("id", axis=1)
 
-cc = list(combinations(train_x.columns, 3))
-'''
-for i in range(2, len(train_x.columns)):
-    print(i)
-    cc = list(combinations(train_x.columns, i))
-print(cc)
-'''
 #train_x = train_x[["16","33", "45", "63", "65", "73", "91", "108", "117", "164", "189", "199", "209", "217", "239"]]
-import pickle
-temp = ["hello"]
 
 
-
-
-results = []
-orig_train = train_x.copy()
 target_y = train_df["target"]
-for i, data in enumerate(cc):
-    print(str(i) + "/" + str(len(cc)))
-    data = list(data)
-    #print(data)
-    train_x = orig_train[data]
 
-    
 
-    #Split up the dataset for testing and training purposes
-    train_x, test_x, train_y, test_y = train_test_split(train_x, target_y, test_size = 0.33, random_state = 5)
+#Split up the dataset for testing and training purposes
+train_x, test_x, train_y, test_y = train_test_split(train_x, target_y, test_size = 0.33, random_state = 5)
 
-    ##########################################################################################
+##########################################################################################
 
 
 
 
-    ##########################################################################################
-    #####################################APPLYING ML LIBRARIES###################################
-    """
-    ################## apply Linear Regression: #####################
-    y_prediction = linearAlgo.apply_linear_regression(train_x, train_y, test_x)
-    display_accuracy(y_prediction, test_y, "Linear Regression")
-    print(y_prediction)
-    ####################################################################################
-    """
-    ################## apply Logistic Regression:##################
-    y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x)
-    accuracy = return_accuracy(y_prediction, test_y)
-    temp = [accuracy, data]
-    results.append(temp)
+##########################################################################################
+#####################################APPLYING ML LIBRARIES###################################
+"""
+################## apply Linear Regression: #####################
+y_prediction = linearAlgo.apply_linear_regression(train_x, train_y, test_x)
+display_accuracy(y_prediction, test_y, "Linear Regression")
+print(y_prediction)
+####################################################################################
+"""
+################## apply Logistic Regression:##################
+y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x)
+accuracy = return_accuracy(y_prediction, test_y)
+temp = [accuracy, data]
+results.append(temp)
 
 
 with open("temp.txt", "wb") as myfile:

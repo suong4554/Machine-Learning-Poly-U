@@ -55,6 +55,7 @@ train_df = load_df(home_dir, "train.csv")
 # create the training set: (without "target" and "id" column)
 train_x = train_df.drop("target", axis=1).drop("id", axis=1)
 train_y = train_df["target"]
+train_x = train_x[["16","33", "45", "63", "65", "73", "91", "108", "117", "164", "189", "199", "209", "217", "239"]]
 
 """
 # take "test_amount" examples for testing:
@@ -72,7 +73,7 @@ train_df = load_df(home_dir, "test.csv")
 
 #create the testing set: (without "id" column)
 test_x = train_df.drop("id", axis=1)
-
+test_x = test_x[["16","33", "45", "63", "65", "73", "91", "108", "117", "164", "189", "199", "209", "217", "239"]]
 
 ##########################################################################################
 
@@ -88,23 +89,22 @@ y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x)
 createSubmission(y_prediction, home_dir)
 
 submitD = True
-message = "test submission for Logistic Regression penalty = l1"
+message = "submission for Logistic Regression penalty = l1"
 submit(submitD, message, home_dir)
 
 ####################################################################################
 
 
-"""
+
 ################## apply Naive Bayes GaussianNB##################
 
-y_prediction = nba.apply_naive(train_x, train_y, test_x)
-submitD = False
-message = "test submission for Logistic Regression no params"
+y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x)
+submitD = True
+message = "submission for MLP Classifier"
 submit(submitD, message, home_dir)
 ####################################################################################
 
 
-"""
 
 
 
