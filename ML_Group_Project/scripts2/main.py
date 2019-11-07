@@ -170,7 +170,7 @@ test_x = test_x[cols]
 ################## apply Logistic Regression:##################
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x, train_y)
 createSubmission(y_prediction, home_dir)
-
+print(y_prediction)
 submitD = False
 message = "submission for Logistic Regression penalty = l1"
 submit(submitD, message, home_dir)
@@ -192,7 +192,6 @@ submit(submitD, message, home_dir)
 ################## apply Lasso##################
 
 y_prediction = lA.apply_lasso(train_x, train_y, test_x, train_y)
-print(y_prediction)
 submitD = False
 message = "submission for Lasso"
 submit(submitD, message, home_dir)

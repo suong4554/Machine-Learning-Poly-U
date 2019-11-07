@@ -12,7 +12,7 @@ def apply_lasso(train_x, train_y, test_x, total_y):
 
     model.fit(train_x, train_y)
     # predict the results:
+    #y_prediction = model.predict_proba(test_x)[:,1]
     y_prediction = model.predict(test_x)
-
     # return predictions:
     return y_prediction.tolist()

@@ -24,7 +24,7 @@ def apply_logistic_regression(train_x, train_y, test_x, total_y):
     model.fit(train_x, train_y)
 
     # predict the test results:
-    y_prediction = model.predict(test_x)
-
+    #y_prediction = model.predict(test_x)
+    y_prediction = model.predict_proba(test_x)[:,1]
     # return predictions:
     return y_prediction.tolist()
