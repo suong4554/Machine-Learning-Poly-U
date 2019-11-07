@@ -12,6 +12,8 @@ from sklearn.linear_model import Lasso
 from sklearn.feature_selection import RFECV
 import numpy as np
 
+from sklearn.model_selection import StratifiedKFold
+from sklearn.svm import SVC
 
 # returns the data from the Exel table:
 def load_df(dir_path, file_name):
@@ -49,13 +51,11 @@ def submit(submitB, message, dir):
 # load the training data frame:
 home_dir = os.path.dirname(os.path.realpath(__file__)).replace("scripts2", "")
 train_df = load_df(home_dir, "train.csv")
-
+train_id = train_df["id"]
 # create the training set: (without "target" and "id" column)
 train_x = train_df.drop("target", axis=1).drop("id", axis=1)
 train_y = train_df["target"]
 #train_x = train_x[["16","33", "45", "63", "65", "73", "91", "108", "117", "164", "189", "199", "209", "217", "239"]]
-#train_x = train_x[["65", '201', '297', '33', '108', '194', '0', '82', '116', '199', '256', '141', '285']]
-total_y = train_df["target"]
 
 
 
@@ -64,57 +64,76 @@ total_y = train_df["target"]
 
 
 #load the testing DataFrame:
-train_df = load_df(home_dir, "test.csv")
-
+test_df = load_df(home_dir, "test.csv")
+test_id = test_df["id"]
 #create the testing set: (without "id" column)
-test_x = train_df.drop("id", axis=1)
+test_x = test_df.drop("id", axis=1)
 #test_x = test_x[["16","33", "45", "63", "65", "73", "91", "108", "117", "164", "189", "199", "209", "217", "239"]]
-#test_x = test_x[["65", '201', '297', '33', '108', '194', '0', '82', '116', '199', '256', '141', '285']]
 
-"""
+
+
 train_shape = train_x.shape[0]
 total_x = RobustScaler().fit_transform(np.concatenate((train_x, test_x), axis=0))
 
-train_x = total_x[:train_shape]
-#test_x = total_x[train_shape:]
-"""
-"""
+train_x = pd.DataFrame(data=total_x[:train_shape])
+test_x = pd.DataFrame(data=total_x[train_shape:])
 
-from sklearn.feature_selection import SelectFromModel
-from sklearn.svm import LinearSVC
-lsvc = LinearSVC(C=0.2, penalty="l1", dual=False).fit(train_x, train_y)
-model = SelectFromModel(lsvc, prefit=True)
-train_x = model.transform(train_x)
-cols = model.get_support(indices=True)
-"""
 
-"""
-model = LogisticRegression(
-    
-    C=.2, 
+
+
+
+#Logistic Regression Model Used for Feature Selection
+modelLR = LogisticRegression(
+    C=.2,
     fit_intercept=False,
-    intercept_scaling=1, 
-    
+    intercept_scaling=1,
     class_weight="balanced",
     penalty='l1',
-
-    solver='liblinear', 
-    verbose=0, 
+    solver='liblinear',
+    verbose=0,
     warm_start=False)
-"""
-model = Lasso(alpha=0.031, tol=0.01, random_state=4, selection='random')
 
-from sklearn.model_selection import StratifiedKFold
-from sklearn.svm import SVC
-svc = SVC(kernel="linear")
-train_shape = train_x.shape[0]
-feature_selector = RFECV(estimator=model, min_features_to_select=16, step=5, verbose=0, cv=20, n_jobs=-1)
+#Lasso Model Used for Feature Selection
+modelLA = Lasso(alpha=0.031, tol=0.01, random_state=4, selection='random')
 
-feature_selector.fit(train_x, total_y)
+
+
+#Feature Selector
+#https://scikit-learn.org/stable/modules/feature_selection.html
+#250/25 = 10, step removes 10 per step
+#16/250 .= 15% of dataset
+
+#########################Feature Selection with Lasso Function#############################
+
+#Use of Kfold to test various parts of data, feature selection
+feature_selector = RFECV(estimator=modelLA, min_features_to_select=16, step=5, verbose=0, cv=StratifiedKFold(20), n_jobs=-1)
+feature_selector.fit(train_x, train_y)
 
 
 print("Optimal number of features : %d" % feature_selector.n_features_)
-#features=train_x[:,feature_selector.support_]
+#Gets columns that were selected
+colsLA = feature_selector.get_support(indices=True)
+print("Selected Colums LA are:", colsLA)
+
+# Plot number of features VS. cross-validation scores
+plt.figure()
+plt.xlabel("Number of features selected")
+plt.ylabel("Cross validation score (nb of correct classifications)")
+plt.plot(range(1, len(feature_selector.grid_scores_) + 1), feature_selector.grid_scores_)
+plt.show()
+
+#########################Feature Selection with Logarithmic Function#############################
+
+#Use of Kfold to test various parts of data, feature selection
+feature_selector = RFECV(estimator=modelLR, min_features_to_select=5, step=10, verbose=0, cv=StratifiedKFold(20), n_jobs=-1)
+feature_selector.fit(train_x, train_y)
+
+
+print("Optimal number of features : %d" % feature_selector.n_features_)
+#Gets columns that were selected
+colsLR = feature_selector.get_support(indices=True)
+print("Selected Colums LR are:", colsLR)
+
 # Plot number of features VS. cross-validation scores
 plt.figure()
 plt.xlabel("Number of features selected")
@@ -123,24 +142,21 @@ plt.plot(range(1, len(feature_selector.grid_scores_) + 1), feature_selector.grid
 plt.show()
 
 
-cols = feature_selector.get_support(indices=True)
-print(cols)
-"""
-train_x = x_values[:train_shape]
-test_x = x_values[train_shape:]  
-"""
 
+#Combine Columns of feature selected Data
+cols = []
+for col in colsLA:
+    if col not in cols:
+        cols.append(col)
+for col in colsLR:
+    if col not in cols:
+        cols.append(col)
 
+print("Selected Colums are:", cols)
+#Set data to fitted data
+train_x = train_x[cols]
+test_x = test_x[cols]
 
-colString = []
-for data in cols:
-    colString.append(str(data))
-
-train_x = train_x[colString]
-test_x = test_x[colString]
-
-print(test_x.shape, train_x.shape)
-print(cols)
 
 ##########################################################################################
 
@@ -152,7 +168,7 @@ print(cols)
 
 
 ################## apply Logistic Regression:##################
-y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x, total_y)
+y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x, train_y)
 createSubmission(y_prediction, home_dir)
 
 submitD = False
@@ -165,7 +181,7 @@ submit(submitD, message, home_dir)
 
 ################## apply MLP Classifier##################
 
-y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x, total_y)
+y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x, train_y)
 submitD = False
 message = "submission for MLP Classifier"
 submit(submitD, message, home_dir)
@@ -175,12 +191,9 @@ submit(submitD, message, home_dir)
 
 ################## apply Lasso##################
 
-y_prediction = lA.apply_lasso(train_x, train_y, test_x, total_y)
-submitD = True
+y_prediction = lA.apply_lasso(train_x, train_y, test_x, train_y)
+print(y_prediction)
+submitD = False
 message = "submission for Lasso"
 submit(submitD, message, home_dir)
 ####################################################################################
-
-
-
-
