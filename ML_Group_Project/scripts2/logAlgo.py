@@ -11,14 +11,9 @@ def apply_logistic_regression(train_x, train_y, test_x, total_y):
 
         C=.2,
         fit_intercept=False,
-        intercept_scaling=1,
-
         class_weight="balanced",
         penalty='l1',
-
-        solver='liblinear',
-        verbose=0,
-        warm_start=False)
+        solver='liblinear')
 
 
     model.fit(train_x, train_y)
