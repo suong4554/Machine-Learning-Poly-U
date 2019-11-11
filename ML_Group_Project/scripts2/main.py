@@ -97,7 +97,6 @@ modelLR = LogisticRegression(
 modelLA = Lasso(alpha=0.031, tol=0.01, random_state=4, selection='random')
 
 
-
 #Feature Selector
 #https://scikit-learn.org/stable/modules/feature_selection.html
 #250/25 = 10, step removes 10 per step
@@ -119,6 +118,7 @@ print("Selected Colums LA are:", colsLA)
 plt.figure()
 plt.xlabel("Number of features selected")
 plt.ylabel("Cross validation score (nb of correct classifications)")
+plt.title("Lasso Regression RFECV")
 plt.plot(range(1, len(feature_selector.grid_scores_) + 1), feature_selector.grid_scores_)
 plt.show()
 
@@ -138,6 +138,7 @@ print("Selected Colums LR are:", colsLR)
 plt.figure()
 plt.xlabel("Number of features selected")
 plt.ylabel("Cross validation score (nb of correct classifications)")
+plt.title("Logistic Regression RFECV")
 plt.plot(range(1, len(feature_selector.grid_scores_) + 1), feature_selector.grid_scores_)
 plt.show()
 
