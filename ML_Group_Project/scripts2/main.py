@@ -170,8 +170,8 @@ test_x = test_x[cols]
 
 ################## apply Logistic Regression:##################
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x, train_y)
+y1 = y_prediction
 createSubmission(y_prediction, home_dir)
-print(y_prediction)
 submitD = False
 message = "submission for Logistic Regression penalty = l1"
 submit(submitD, message, home_dir)
@@ -183,6 +183,8 @@ submit(submitD, message, home_dir)
 ################## apply MLP Classifier##################
 
 y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x, train_y)
+y2 = y_prediction
+createSubmission(y_prediction, home_dir)
 submitD = False
 message = "submission for MLP Classifier"
 submit(submitD, message, home_dir)
@@ -190,10 +192,25 @@ submit(submitD, message, home_dir)
 
 
 
+
 ################## apply Lasso##################
 
 y_prediction = lA.apply_lasso(train_x, train_y, test_x, train_y)
+y3 = y_prediction
+createSubmission(y_prediction, home_dir)
 submitD = False
 message = "submission for Lasso"
 submit(submitD, message, home_dir)
 ####################################################################################
+
+
+
+################## Combined Values##################
+
+res_list = []
+for i in range(0, len(y1)):
+    res_list.append((y1[i][1] + y2[i][1] + y3[i][1])/3)
+createSubmission(res_list, home_dir)
+submitD = True
+message = "submission for Average of Logistic, Lasso, and MLP"
+submit(submitD, message, home_dir)
