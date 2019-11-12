@@ -1,4 +1,3 @@
-from IPython import get_ipython
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 import pandas as pd
@@ -15,6 +14,7 @@ import numpy as np
 from sklearn.model_selection import StratifiedKFold
 from sklearn.svm import SVC
 
+
 # returns the data from the Exel table:
 def load_df(dir_path, file_name):
     file = dir_path + "\\data\\" + file_name
@@ -27,19 +27,21 @@ def display_accuracy(y_prediction, test_y, display_message):
     print("Accuracy_Score of " + display_message + " " + str(accuracy_score(y_prediction, test_y.tolist())))
 
 
-def createSubmission(arr, dir):
+# creates the file for submission
+def create_submission(arr, dir):
     dir = dir + "\\submission\\submission.csv"
     for i in range(len(arr)):
         arr[i] = [i + 250, arr[i]]
-    df = pd.DataFrame(arr, columns = ["id", "target"])
+    df = pd.DataFrame(arr, columns=["id", "target"])
     df.to_csv(dir, index=False)
     print("submission written to file")
 
 
+# submits the file to kaggle.com
 def submit(submitB, message, dir):
     dir = dir + "\\submission\\submission.csv"
     command = 'kaggle competitions submit -c dont-overfit-ii -f ' + str(dir) + ' -m "' + str(message) + '"'
-    if(submitB):
+    if (submitB):
         os.system(command)
         print("\n Submitted")
     else:
@@ -47,7 +49,8 @@ def submit(submitB, message, dir):
 
 
 ##########################################################################################
-#####################################DATA PREPROCESSING###################################
+#                                    DATA PREPROCESSING
+
 # load the training data frame:
 home_dir = os.path.dirname(os.path.realpath(__file__)).replace("scripts2", "")
 train_df = load_df(home_dir, "train.csv")
@@ -55,62 +58,43 @@ train_id = train_df["id"]
 # create the training set: (without "target" and "id" column)
 train_x = train_df.drop("target", axis=1).drop("id", axis=1)
 train_y = train_df["target"]
-#train_x = train_x[["16","33", "45", "63", "65", "73", "91", "108", "117", "164", "189", "199", "209", "217", "239"]]
 
-
-
-
-
-
-
-#load the testing DataFrame:
+# load the testing DataFrame:
 test_df = load_df(home_dir, "test.csv")
 test_id = test_df["id"]
-#create the testing set: (without "id" column)
+# create the testing set: (without "id" column)
 test_x = test_df.drop("id", axis=1)
-#test_x = test_x[["16","33", "45", "63", "65", "73", "91", "108", "117", "164", "189", "199", "209", "217", "239"]]
 
-
-
+# Here we apply Standardization -> RobustScaler() which is especially good regarding outliers
+# we standardize the total date and split it again afterwards
 train_shape = train_x.shape[0]
 total_x = RobustScaler().fit_transform(np.concatenate((train_x, test_x), axis=0))
 
+# This are the standardized data sets:
 train_x = pd.DataFrame(data=total_x[:train_shape])
 test_x = pd.DataFrame(data=total_x[train_shape:])
 
 
+# -> Now we start applying feature selection and/or dimensionality reduction, as this is especially promising
+# with such high dimensional data.
 
-
-
-#Logistic Regression Model Used for Feature Selection
-modelLR = LogisticRegression(
-    C=.2,
-    fit_intercept=False,
-    intercept_scaling=1,
-    class_weight="balanced",
-    penalty='l1',
-    solver='liblinear',
-    verbose=0,
-    warm_start=False)
-
-#Lasso Model Used for Feature Selection
-modelLA = Lasso(alpha=0.03, tol=0.01)
-
-
-#Feature Selector
-#https://scikit-learn.org/stable/modules/feature_selection.html
-#250/25 = 10, step removes 10 per step
-#16/250 .= 15% of dataset
+# Feature Selector
+# https://scikit-learn.org/stable/modules/feature_selection.html
+# 250/25 = 10, step removes 10 per step
+# 16/250 .= 15% of dataset
 
 #########################Feature Selection with Lasso Function#############################
 
-#Use of Kfold to test various parts of data, feature selection
-feature_selector = RFECV(estimator=modelLA, min_features_to_select=16, step=5, verbose=0, cv=StratifiedKFold(20), n_jobs=-1)
+modelLA = Lasso(alpha=0.03, tol=0.01)
+
+# Use of Kfold to test various parts of data, feature selection (Recursive feature elimination with cross-validation):
+feature_selector = RFECV(estimator=modelLA, min_features_to_select=16, step=5, verbose=0, cv=StratifiedKFold(20),
+                         n_jobs=-1)
 feature_selector.fit(train_x, train_y)
 
-
 print("Optimal number of features : %d" % feature_selector.n_features_)
-#Gets columns that were selected
+
+# Gets columns that were selected
 colsLA = feature_selector.get_support(indices=True)
 print("Selected Colums LA are:", colsLA)
 
@@ -124,13 +108,23 @@ plt.show()
 
 #########################Feature Selection with Logarithmic Function#############################
 
-#Use of Kfold to test various parts of data, feature selection
-feature_selector = RFECV(estimator=modelLR, min_features_to_select=5, step=10, verbose=0, cv=StratifiedKFold(20), n_jobs=-1)
+modelLR = LogisticRegression(
+    C=.2,
+    fit_intercept=False,
+    intercept_scaling=1,
+    class_weight="balanced",
+    penalty='l1',
+    solver='liblinear',
+    verbose=0,
+    warm_start=False)
+
+# Use of Kfold to test various parts of data, feature selection
+feature_selector = RFECV(estimator=modelLR, min_features_to_select=5, step=10, verbose=0, cv=StratifiedKFold(20),
+                         n_jobs=-1)
 feature_selector.fit(train_x, train_y)
 
-
 print("Optimal number of features : %d" % feature_selector.n_features_)
-#Gets columns that were selected
+# Gets columns that were selected
 colsLR = feature_selector.get_support(indices=True)
 print("Selected Colums LR are:", colsLR)
 
@@ -142,9 +136,7 @@ plt.title("Logistic Regression RFECV")
 plt.plot(range(1, len(feature_selector.grid_scores_) + 1), feature_selector.grid_scores_)
 plt.show()
 
-
-
-#Combine Columns of feature selected Data
+# Combine Columns of feature selected Data
 cols = []
 for col in colsLA:
     if col not in cols:
@@ -154,24 +146,19 @@ for col in colsLR:
         cols.append(col)
 
 print("Selected Colums are:", cols)
-#Set data to fitted data
+# Set data to fitted data
 train_x = train_x[cols]
 test_x = test_x[cols]
 
 
 ##########################################################################################
+# ####################################APPLYING ML LIBRARIES###################################
 
 
-
-
-##########################################################################################
-#####################################APPLYING ML LIBRARIES###################################
-
-
-################## apply Logistic Regression:##################
+# ################# apply Logistic Regression:##################
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x, train_y)
 y1 = y_prediction
-createSubmission(y_prediction, home_dir)
+create_submission(y_prediction, home_dir)
 submitD = False
 message = "submission for Logistic Regression penalty = l1"
 submit(submitD, message, home_dir)
@@ -179,38 +166,34 @@ submit(submitD, message, home_dir)
 ####################################################################################
 
 
-
-################## apply MLP Classifier##################
+# ################# apply MLP Classifier##################
 
 y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x, train_y)
 y2 = y_prediction
-createSubmission(y_prediction, home_dir)
+create_submission(y_prediction, home_dir)
 submitD = False
 message = "submission for MLP Classifier"
 submit(submitD, message, home_dir)
 ####################################################################################
 
 
-
-
-################## apply Lasso##################
+# ################# apply Lasso##################
 
 y_prediction = lA.apply_lasso(train_x, train_y, test_x, train_y)
 y3 = y_prediction
-createSubmission(y_prediction, home_dir)
-submitD = True
+create_submission(y_prediction, home_dir)
+submitD = False
 message = "submission for Lasso"
 submit(submitD, message, home_dir)
 ####################################################################################
 
 
-
-################## Combined Values##################
+# ################# Combined Values##################
 
 res_list = []
 for i in range(0, len(y1)):
-    res_list.append((y1[i][1] + y2[i][1] + y3[i][1])/3)
-createSubmission(res_list, home_dir)
+    res_list.append((y1[i][1] + y2[i][1] + y3[i][1]) / 3)
+create_submission(res_list, home_dir)
 submitD = False
 message = "submission for Average of Logistic, Lasso, and MLP"
 submit(submitD, message, home_dir)
