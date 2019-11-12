@@ -8,7 +8,7 @@ import matplotlib
 
 def apply_lasso(train_x, train_y, test_x, total_y):
     # apply Linear Regression:
-    model = Lasso(alpha=0.031, tol=0.01, random_state=4, selection='random')
+    model = Lasso(alpha=0.03, tol=0.01)
 
     model.fit(train_x, train_y)
     # predict the results:

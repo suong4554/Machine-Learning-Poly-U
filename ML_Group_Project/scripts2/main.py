@@ -94,7 +94,7 @@ modelLR = LogisticRegression(
     warm_start=False)
 
 #Lasso Model Used for Feature Selection
-modelLA = Lasso(alpha=0.031, tol=0.01, random_state=4, selection='random')
+modelLA = Lasso(alpha=0.03, tol=0.01)
 
 
 #Feature Selector
@@ -198,7 +198,7 @@ submit(submitD, message, home_dir)
 y_prediction = lA.apply_lasso(train_x, train_y, test_x, train_y)
 y3 = y_prediction
 createSubmission(y_prediction, home_dir)
-submitD = False
+submitD = True
 message = "submission for Lasso"
 submit(submitD, message, home_dir)
 ####################################################################################
@@ -211,6 +211,6 @@ res_list = []
 for i in range(0, len(y1)):
     res_list.append((y1[i][1] + y2[i][1] + y3[i][1])/3)
 createSubmission(res_list, home_dir)
-submitD = True
+submitD = False
 message = "submission for Average of Logistic, Lasso, and MLP"
 submit(submitD, message, home_dir)
