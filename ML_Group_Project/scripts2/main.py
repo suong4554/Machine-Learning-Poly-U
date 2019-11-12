@@ -11,7 +11,7 @@ from sklearn.linear_model import Lasso
 from sklearn.feature_selection import RFECV
 import numpy as np
 
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.svm import SVC
 
 
@@ -55,6 +55,12 @@ def roundValues(predict):
             predict[x] = 0
     return predict
 
+
+# Root mean Square error
+def rmse_cv(model, train_x, train_y):
+    rmse = np.sqrt(-cross_val_score(model, train_x, train_y, scoring="neg_mean_squared_error", cv = 10))
+    return(rmse)
+
 ##########################################################################################
 #                                    DATA PREPROCESSING
 
@@ -82,6 +88,32 @@ train_x = pd.DataFrame(data=total_x[:train_shape])
 test_x = pd.DataFrame(data=total_x[train_shape:])
 
 
+
+#########################Calculate Alpha for Lasso Function#############################
+#Alpha Selection for Lasso:
+
+#Calculate Alphas to use
+alphas = [0.01, 0.03, 0.04, 0.05, 0.06 , .1]
+cv_lasso = [rmse_cv(Lasso(alpha = alpha), train_x, train_y).mean() for alpha in alphas]
+cv_lasso = pd.Series(cv_lasso, index = alphas)
+cv_lasso.plot(title = "Alpha Validation")
+plt.xlabel("Alpha")
+plt.ylabel("Rmse")
+plt.show()
+
+#Calculate tolerances to use
+tols = [0.005, 0.01, 0.015, 0.02, 0.025]
+cv_lasso = [rmse_cv(Lasso(alpha = .03, tol=tol), train_x, train_y).mean() for tol in tols]
+cv_lasso = pd.Series(cv_lasso, index = tols)
+cv_lasso.plot(title = "Tolerance Validation")
+plt.xlabel("Tolerance")
+plt.ylabel("Rmse")
+plt.show()
+modelLA = Lasso(alpha=0.03, tol=0.01)
+
+#########################Feature Selection with Lasso Function#############################
+
+
 # -> Now we start applying feature selection and/or dimensionality reduction, as this is especially promising
 # with such high dimensional data.
 
@@ -90,9 +122,6 @@ test_x = pd.DataFrame(data=total_x[train_shape:])
 # 250/25 = 10, step removes 10 per step
 # 16/250 .= 15% of dataset
 
-#########################Feature Selection with Lasso Function#############################
-
-modelLA = Lasso(alpha=0.03, tol=0.01)
 
 # Use of Kfold to test various parts of data, feature selection (Recursive feature elimination with cross-validation):
 feature_selector = RFECV(estimator=modelLA, min_features_to_select=16, step=5, verbose=0, cv=StratifiedKFold(20),
@@ -102,7 +131,6 @@ feature_selector.fit(train_x, train_y)
 print("Optimal number of features : %d" % feature_selector.n_features_)
 #Gets columns that were selected
 cols = feature_selector.get_support(indices=True)
-print("Selected Colums LA are:", cols)
 
 # Plot number of features VS. cross-validation scores
 plt.figure()
@@ -127,7 +155,7 @@ test_x = test_x[cols]
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x, train_y)
 y1 = y_prediction
 y_prediction = roundValues(y_prediction)
-createSubmission(y_prediction, home_dir)
+create_submission(y_prediction, home_dir)
 submitD = False
 message = "submission for Logistic Regression penalty = l1 with Rounded values"
 submit(submitD, message, home_dir)
@@ -140,8 +168,8 @@ submit(submitD, message, home_dir)
 y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x, train_y)
 y2 = y_prediction
 y_prediction = roundValues(y_prediction)
-createSubmission(y_prediction, home_dir)
-submitD = True
+create_submission(y_prediction, home_dir)
+submitD = False
 message = "submission for MLP Classifier with Rounded values"
 submit(submitD, message, home_dir)
 ####################################################################################
@@ -152,7 +180,7 @@ submit(submitD, message, home_dir)
 y_prediction = lA.apply_lasso(train_x, train_y, test_x, train_y)
 y3 = y_prediction
 y_prediction = roundValues(y_prediction)
-createSubmission(y_prediction, home_dir)
+create_submission(y_prediction, home_dir)
 
 submitD = False
 message = "submission for Lasso with Rounded values"
