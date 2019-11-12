@@ -45,6 +45,13 @@ def submit(submitB, message, dir):
     else:
         print("Not Submitted")
 
+def roundValues(predict):
+    for x, data in enumerate(predict):
+        if data > 0.5:
+            predict[x] = 1
+        else:
+            predict[x] = 0
+    return predict
 
 ##########################################################################################
 #####################################DATA PREPROCESSING###################################
@@ -111,8 +118,8 @@ feature_selector.fit(train_x, train_y)
 
 print("Optimal number of features : %d" % feature_selector.n_features_)
 #Gets columns that were selected
-colsLA = feature_selector.get_support(indices=True)
-print("Selected Colums LA are:", colsLA)
+cols = feature_selector.get_support(indices=True)
+print("Selected Colums LA are:", cols)
 
 # Plot number of features VS. cross-validation scores
 plt.figure()
@@ -122,36 +129,6 @@ plt.title("Lasso Regression RFECV")
 plt.plot(range(1, len(feature_selector.grid_scores_) + 1), feature_selector.grid_scores_)
 plt.show()
 
-#########################Feature Selection with Logarithmic Function#############################
-
-#Use of Kfold to test various parts of data, feature selection
-feature_selector = RFECV(estimator=modelLR, min_features_to_select=5, step=10, verbose=0, cv=StratifiedKFold(20), n_jobs=-1)
-feature_selector.fit(train_x, train_y)
-
-
-print("Optimal number of features : %d" % feature_selector.n_features_)
-#Gets columns that were selected
-colsLR = feature_selector.get_support(indices=True)
-print("Selected Colums LR are:", colsLR)
-
-# Plot number of features VS. cross-validation scores
-plt.figure()
-plt.xlabel("Number of features selected")
-plt.ylabel("Cross validation score (nb of correct classifications)")
-plt.title("Logistic Regression RFECV")
-plt.plot(range(1, len(feature_selector.grid_scores_) + 1), feature_selector.grid_scores_)
-plt.show()
-
-
-
-#Combine Columns of feature selected Data
-cols = []
-for col in colsLA:
-    if col not in cols:
-        cols.append(col)
-for col in colsLR:
-    if col not in cols:
-        cols.append(col)
 
 print("Selected Colums are:", cols)
 #Set data to fitted data
@@ -171,9 +148,10 @@ test_x = test_x[cols]
 ################## apply Logistic Regression:##################
 y_prediction = logAlgo.apply_logistic_regression(train_x, train_y, test_x, train_y)
 y1 = y_prediction
+y_prediction = roundValues(y_prediction)
 createSubmission(y_prediction, home_dir)
 submitD = False
-message = "submission for Logistic Regression penalty = l1"
+message = "submission for Logistic Regression penalty = l1 with Rounded values"
 submit(submitD, message, home_dir)
 
 ####################################################################################
@@ -184,9 +162,10 @@ submit(submitD, message, home_dir)
 
 y_prediction = nA.apply_MLPClassifier(train_x, train_y, test_x, train_y)
 y2 = y_prediction
+y_prediction = roundValues(y_prediction)
 createSubmission(y_prediction, home_dir)
-submitD = False
-message = "submission for MLP Classifier"
+submitD = True
+message = "submission for MLP Classifier with Rounded values"
 submit(submitD, message, home_dir)
 ####################################################################################
 
@@ -197,9 +176,11 @@ submit(submitD, message, home_dir)
 
 y_prediction = lA.apply_lasso(train_x, train_y, test_x, train_y)
 y3 = y_prediction
+y_prediction = roundValues(y_prediction)
 createSubmission(y_prediction, home_dir)
-submitD = True
-message = "submission for Lasso"
+
+submitD = False
+message = "submission for Lasso with Rounded values"
 submit(submitD, message, home_dir)
 ####################################################################################
 
