@@ -56,7 +56,8 @@ def roundValues(predict):
     return predict
 
 
-# Root mean Square error
+# Root mean Square error => standard deviation of residuals
+#Residuals => how far from the regression line data points are
 def rmse_cv(model, train_x, train_y):
     rmse = np.sqrt(-cross_val_score(model, train_x, train_y, scoring="neg_mean_squared_error", cv = 10))
     return(rmse)
@@ -79,7 +80,7 @@ test_id = test_df["id"]
 test_x = test_df.drop("id", axis=1)
 
 # Here we apply Standardization -> RobustScaler() which is especially good regarding outliers
-# we standardize the total date and split it again afterwards
+# we standardize the total data and split it again afterwards
 train_shape = train_x.shape[0]
 total_x = RobustScaler().fit_transform(np.concatenate((train_x, test_x), axis=0))
 
